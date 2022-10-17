@@ -6,12 +6,50 @@ from django.views.generic import ListView, DetailView, CreateView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import *
-from rest_framework import generics
+from rest_framework import generics, viewsets
 from django.contrib.auth.models import User
 from rest_framework import status
-from .serializers import OrderSerializers
+from .serializers import OrderSerializers, OrdersSerializer
 
 
-class OrderCreateList(generics.ListCreateAPIView):
+class OrderCreateList(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializers
+
+
+@api_view(['GET', 'POST'])
+def orders(request):
+    if request.method == 'POST':
+        serializer = OrdersSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=ValueError):
+            order = serializer.create(validated_data=request.data)
+            print(order)
+            print(request.data, 'REQUEST DATA')
+            response = {
+                'model': order.model_id,
+                'colour': order.colour_id,
+                'quantity': order.quantity,
+            }
+            print(response)
+            return Response(response, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.error_messages, status=status.HTTP_400_BAD_REQUEST)
+    elif request.method == 'GET':
+        order_list = Order.objects.all()
+        response_list = []
+        for order in order_list:
+            response = {
+                'model': order.model_id,
+                'colour': order.colour_id,
+                'quantity': order.quantity,
+                'date_order': order.date_order
+            }
+            response_list.append(response)
+        return Response(response_list, status=status.HTTP_200_OK)
+
+# {
+#     "model": 1,
+#     "colour": 2,
+#     "quantity": 3,
+#     "date_order": "2022-10-17T13:15:20.252602Z"
+#  }
