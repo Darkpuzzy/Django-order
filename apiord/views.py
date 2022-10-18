@@ -9,12 +9,17 @@ from .models import *
 from rest_framework import generics, viewsets
 from django.contrib.auth.models import User
 from rest_framework import status
-from .serializers import OrderSerializers, OrdersSerializer
+from .serializers import *
 
 
 class OrderCreateList(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializers
+
+
+class CarModelCreate(viewsets.ModelViewSet):
+    queryset = CarsModel.objects.all()
+    serializer_class = CarsModelSerializers
 
 
 @api_view(['GET', 'POST'])
@@ -23,14 +28,11 @@ def orders(request):
         serializer = OrdersSerializer(data=request.data)
         if serializer.is_valid(raise_exception=ValueError):
             order = serializer.create(validated_data=request.data)
-            print(order)
-            print(request.data, 'REQUEST DATA')
             response = {
                 'model': order.model_id,
                 'colour': order.colour_id,
                 'quantity': order.quantity,
             }
-            print(response)
             return Response(response, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.error_messages, status=status.HTTP_400_BAD_REQUEST)

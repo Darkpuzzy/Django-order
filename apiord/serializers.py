@@ -17,14 +17,27 @@ class CarsModelSerializers(serializers.ModelSerializer):
         model = CarsModel
         fields = ('model', 'car')
 
+    def validate(self, attrs):
+        #logic validations
+        return attrs
+
+    def create(self, validated_data):
+        obj, created = Car.objects.get_or_create(name=validated_data.get('car').get('name'))
+        cmod = CarsModel.objects.create(model=validated_data.get('model', ''),
+                                        car_id=obj.id)
+        return cmod
+
 
 class ColourSerializers(serializers.ModelSerializer):
     class Meta:
         model = Colour
         fields = ('colour',)
 
+    def create(self, validated_data):
+        pass
 
-#TODO на POST
+
+#TODO на POST v1
 class OrderSerializers(serializers.ModelSerializer):
     # model = CarsModelSerializers()
     # colour = ColourSerializers()
@@ -35,6 +48,7 @@ class OrderSerializers(serializers.ModelSerializer):
         read_only_fields = ('id', 'date_order')
 
 
+#TODO on method GET/POST v2
 class OrdersSerializer(serializers.ModelSerializer):
 
     class Meta:
