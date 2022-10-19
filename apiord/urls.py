@@ -4,8 +4,9 @@ from . import views
 
 urlpatterns = [
     path('api/cars', views.CarModelCreate.as_view({'get': 'list', 'post': 'create'})),
-    # path('api/models/create',),,
-    # path('api/orders/get/<int:pk>',),
+    path('api/cars/<int:pk>', views.CarModelCreate.as_view({'get': 'retrieve', 'put': 'update', 'delete': 'destroy'})),
+    path('api/colour', views.ColourApiSerializer.as_view({'get': 'list', 'post': 'create'})),
+    path('api/colour/<int:pk>', views.ColourApiSerializer.as_view({'get': 'retrieve', 'put': 'update', 'delete': 'destroy'})),
     path('api/orders', views.OrderCreateList.as_view({'get': 'list', 'post': 'create'})),
-    path('api/orders/v2', views.orders),
+    path('api/orders/<int:pk>', views.OrderCreateList.as_view({'get': 'retrieve', 'put': 'update', 'delete': 'destroy'})),
 ]

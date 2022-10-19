@@ -14,7 +14,14 @@ from .serializers import *
 
 class OrderCreateList(viewsets.ModelViewSet):
     queryset = Order.objects.all()
-    serializer_class = OrderSerializers
+    serializer_class = OrderSerializersGet
+
+    def get_serializer_class(self):
+        methods = ['POST', 'PUT']
+        if self.request.method in methods:
+            print('POST OR PUT')
+            return OrderSerializers
+        return self.serializer_class
 
 
 class CarModelCreate(viewsets.ModelViewSet):
@@ -22,36 +29,33 @@ class CarModelCreate(viewsets.ModelViewSet):
     serializer_class = CarsModelSerializers
 
 
-@api_view(['GET', 'POST'])
-def orders(request):
-    if request.method == 'POST':
-        serializer = OrdersSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=ValueError):
-            order = serializer.create(validated_data=request.data)
-            response = {
-                'model': order.model_id,
-                'colour': order.colour_id,
-                'quantity': order.quantity,
-            }
-            return Response(response, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.error_messages, status=status.HTTP_400_BAD_REQUEST)
-    elif request.method == 'GET':
-        order_list = Order.objects.all()
-        response_list = []
-        for order in order_list:
-            response = {
-                'model': order.model_id,
-                'colour': order.colour_id,
-                'quantity': order.quantity,
-                'date_order': order.date_order
-            }
-            response_list.append(response)
-        return Response(response_list, status=status.HTTP_200_OK)
+class ColourApiSerializer(viewsets.ModelViewSet):
+    queryset = Colour.objects.all()
+    serializer_class = ColourSerializers
 
-# {
-#     "model": 1,
-#     "colour": 2,
-#     "quantity": 3,
-#     "date_order": "2022-10-17T13:15:20.252602Z"
-#  }
+# @api_view(['GET', 'POST'])
+# def orders(request):
+#     if request.method == 'POST':
+#         serializer = OrdersSerializer(data=request.data)
+#         if serializer.is_valid(raise_exception=ValueError):
+#             order = serializer.create(validated_data=request.data)
+#             response = {
+#                 'model': order.model_id,
+#                 'colour': order.colour_id,
+#                 'quantity': order.quantity,
+#             }
+#             return Response(response, status=status.HTTP_201_CREATED)
+#         else:
+#             return Response(serializer.error_messages, status=status.HTTP_400_BAD_REQUEST)
+#     elif request.method == 'GET':
+#         order_list = Order.objects.all()
+#         response_list = []
+#         for order in order_list:
+#             response = {
+#                 'model': order.model_id,
+#                 'colour': order.colour_id,
+#                 'quantity': order.quantity,
+#                 'date_order': order.date_order
+#             }
+#             response_list.append(response)
+#         return Response(response_list, status=status.HTTP_200_OK)
