@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'apiord.apps.ApiordConfig',
     'rest_framework',
+    'drf_yasg',
+    'django_filters',
 ]
 
 MIDDLEWARE = [

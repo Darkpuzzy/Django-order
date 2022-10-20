@@ -65,7 +65,6 @@ class OrderSerializersGet(serializers.ModelSerializer):
         read_only_fields = ('id', 'date_order')
 
 
-#TODO на POST v1
 class OrderSerializers(serializers.ModelSerializer):
 
     class Meta:
@@ -73,24 +72,13 @@ class OrderSerializers(serializers.ModelSerializer):
         fields = ('model', 'colour', 'quantity', 'date_order')
         read_only_fields = ('id', 'date_order')
 
-    # def create(self, validated_data):
-    #     model_id = CarsModel.objects.get(model=validated_data.get('model').get('model'))
-    #     colour_id = Colour.objects.get(colour=validated_data.get('colour', '').get('colour'))
-    #     order = Order.objects.create(
-    #         model_id=model_id.id,
-    #         colour_id=colour_id.id,
-    #         quantity=validated_data.get('quantity', 0),
-    #     )
-    #     return order
-    #
-    # def update(self, instance, validated_data):
-    #     instance.model_id = validated_data.get('model', instance.model)
-    #     instance.colour_id = validated_data.get('colour', instance.colour)
-    #     instance.quantity = validated_data.get('quantity', instance.quantity)
-    #     instance.save()
-    #
-    #     return instance
 
+class ColourQuantitySerializers(serializers.ModelSerializer):
+    colour = ColourSerializers()
+
+    class Meta:
+        model = Order
+        fields = ('colour', 'quantity')
 
 # #TODO on method GET/POST v2
 # class OrdersSerializer(serializers.ModelSerializer):
