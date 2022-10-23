@@ -64,7 +64,6 @@ def index(request):
                 count += i.quantity
                 response['colour'] = c_i.colour
                 response['quantity'] = count
-            print(response)
         list_response.append(response)
 
     return Response(list_response, status=status_code)
